@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Object Metal Detection System &verbar; Node-RED flows explaination&period;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="object-metal-detection-system--node-red-flows-explaination">Object Metal Detection System | Node-RED flows explaination.</h1>
+<h3 id="node-template--node-การ-custom-dashboard-ต่างๆ">Node <code>template</code> | Node การ Custom Dashboard ต่างๆ</h3>
+<p><img src="file:///c:\University\SideProject\PTangProj\image.png" alt="alt text"></p>
+<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="language-css">
+    ui-card-panel {
+        <span class="hljs-attribute">box-shadow</span>: <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.35</span>) <span class="hljs-number">0px</span> <span class="hljs-number">5px</span> <span class="hljs-number">15px</span>;
+    }
+
+    <span class="hljs-selector-class">.nr-dashboard-theme</span> <span class="hljs-selector-class">.nr-dashboard-button</span> <span class="hljs-selector-class">.md-button</span> {
+        <span class="hljs-attribute">box-shadow</span>: <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.17</span>) <span class="hljs-number">0px</span> -<span class="hljs-number">23px</span> <span class="hljs-number">25px</span> <span class="hljs-number">0px</span> inset, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.15</span>) <span class="hljs-number">0px</span> -<span class="hljs-number">36px</span> <span class="hljs-number">30px</span> <span class="hljs-number">0px</span> inset, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>,
+                <span class="hljs-number">0.1</span>) <span class="hljs-number">0px</span> -<span class="hljs-number">79px</span> <span class="hljs-number">40px</span> <span class="hljs-number">0px</span> inset, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.06</span>) <span class="hljs-number">0px</span> <span class="hljs-number">2px</span> <span class="hljs-number">1px</span>, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.09</span>) <span class="hljs-number">0px</span> <span class="hljs-number">4px</span> <span class="hljs-number">2px</span>, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.09</span>) <span class="hljs-number">0px</span> <span class="hljs-number">8px</span> <span class="hljs-number">4px</span>, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.09</span>) <span class="hljs-number">0px</span> <span class="hljs-number">16px</span> <span class="hljs-number">8px</span>, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.09</span>) <span class="hljs-number">0px</span> <span class="hljs-number">32px</span> <span class="hljs-number">16px</span>;
+        <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">50px</span>;
+    }
+    <span class="hljs-selector-class">.sheet</span> <span class="hljs-selector-class">.md-button</span> {
+        <span class="hljs-attribute">box-shadow</span>: <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.17</span>) <span class="hljs-number">0px</span> -<span class="hljs-number">23px</span> <span class="hljs-number">25px</span> <span class="hljs-number">0px</span> inset, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.15</span>) <span class="hljs-number">0px</span> -<span class="hljs-number">36px</span> <span class="hljs-number">30px</span> <span class="hljs-number">0px</span> inset, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>,
+                <span class="hljs-number">0.1</span>) <span class="hljs-number">0px</span> -<span class="hljs-number">79px</span> <span class="hljs-number">40px</span> <span class="hljs-number">0px</span> inset, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.06</span>) <span class="hljs-number">0px</span> <span class="hljs-number">2px</span> <span class="hljs-number">1px</span>, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.09</span>) <span class="hljs-number">0px</span> <span class="hljs-number">4px</span> <span class="hljs-number">2px</span>, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.09</span>) <span class="hljs-number">0px</span> <span class="hljs-number">8px</span> <span class="hljs-number">4px</span>, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.09</span>) <span class="hljs-number">0px</span> <span class="hljs-number">16px</span> <span class="hljs-number">8px</span>, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.09</span>) <span class="hljs-number">0px</span> <span class="hljs-number">32px</span> <span class="hljs-number">16px</span>;
+        <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">50px</span>;
+    }
+<span class="hljs-selector-tag">p</span>{
+    <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>;
+}
+root, <span class="hljs-selector-tag">a</span>, <span class="hljs-selector-tag">button</span>, <span class="hljs-selector-tag">p</span>, <span class="hljs-selector-tag">div</span> {
+-webkit-user-select: none <span class="hljs-meta">!important</span>;
+}
+
+<span class="hljs-selector-tag">body</span> {
+<span class="hljs-attribute">background</span>: <span class="hljs-built_in">-webkit-linear-gradient</span>(<span class="hljs-number">55deg</span>, <span class="hljs-built_in">rgb</span>(<span class="hljs-number">24</span>, <span class="hljs-number">117</span>, <span class="hljs-number">106</span>) <span class="hljs-number">0%</span>, <span class="hljs-built_in">rgb</span>(<span class="hljs-number">24</span>, <span class="hljs-number">117</span>, <span class="hljs-number">106</span>) <span class="hljs-number">100%</span>);
+-webkit-touch-callout: none <span class="hljs-meta">!important</span>;
+}
+<span class="hljs-selector-class">.md-toolbar-tools</span> <span class="hljs-selector-tag">h1</span><span class="hljs-selector-attr">[node-id=<span class="hljs-string">&quot;dashboard_tab&quot;</span>]</span>{
+<span class="hljs-attribute">text-align</span>: left;
+<span class="hljs-attribute">font-size</span>: <span class="hljs-number">3rem</span>;
+<span class="hljs-attribute">font-weight</span>: bold;
+<span class="hljs-attribute">width</span>: auto;
+<span class="hljs-attribute">position</span>: absolute;
+<span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateY</span>(<span class="hljs-number">45%</span>);
+}
+md-toolbar{
+    <span class="hljs-attribute">height</span>: <span class="hljs-number">180px</span>;
+    <span class="hljs-attribute">width</span>:auto;
+    <span class="hljs-attribute">background-image</span>:<span class="hljs-built_in">url</span>(<span class="hljs-string">&quot;https://cdn.discordapp.com/attachments/915785990566719488/1348924492872679476/nr-dashboard-cardtitle.png?ex=680748d4&amp;is=6805f754&amp;hm=0aabdb77f8418d4687e8473317f727c4104cd36ec92a7feb501a662be47a64c4&amp;&quot;</span>);
+    <span class="hljs-attribute">background-repeat</span>: no-repeat;
+    <span class="hljs-attribute">margin-left</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attribute">background-size</span>: contain;
+    <span class="hljs-attribute">background-position</span>: right;
+    <span class="hljs-attribute">box-shadow</span>: <span class="hljs-built_in">rgba</span>(<span class="hljs-number">50</span>, <span class="hljs-number">50</span>, <span class="hljs-number">93</span>, <span class="hljs-number">0.25</span>) <span class="hljs-number">0px</span> <span class="hljs-number">6px</span> <span class="hljs-number">12px</span> -<span class="hljs-number">2px</span>, <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.3</span>) <span class="hljs-number">0px</span> <span class="hljs-number">3px</span> <span class="hljs-number">7px</span> -<span class="hljs-number">3px</span>;
+}
+<span class="hljs-selector-class">.md-toolbar-tools</span> <span class="hljs-selector-tag">h1</span><span class="hljs-selector-attr">[node-id=<span class="hljs-string">&quot;dashboard_tab&quot;</span>]</span><span class="hljs-selector-pseudo">::after</span> {
+<span class="hljs-attribute">content</span>: <span class="hljs-string">&quot;By Mechanical Embedded System Laboratory Silpakorn University&quot;</span>;
+<span class="hljs-attribute">width</span>: <span class="hljs-number">400px</span>;
+<span class="hljs-attribute">display</span>: block;
+<span class="hljs-attribute">font-size</span>: <span class="hljs-number">1.3rem</span>;
+<span class="hljs-attribute">font-weight</span>: normal;
+<span class="hljs-attribute">margin-top</span>: <span class="hljs-number">0.5rem</span>;
+<span class="hljs-attribute">color</span>: white;
+}
+<span class="hljs-selector-tag">body</span><span class="hljs-selector-class">.md-default-theme</span>, <span class="hljs-selector-tag">body</span>, <span class="hljs-selector-tag">html</span><span class="hljs-selector-class">.md-default-theme</span>, <span class="hljs-selector-tag">html</span>{
+    <span class="hljs-attribute">background-color</span>: <span class="hljs-built_in">rgb</span>(<span class="hljs-number">24</span>, <span class="hljs-number">117</span>, <span class="hljs-number">106</span>);
+}
+ui-card-panel{
+    <span class="hljs-attribute">background-color</span>: white;
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">20px</span>;
+        <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
+        <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>;
+}
+
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+</code></pre>
+<hr>
+<p><code>ui-card-panel</code> (การ์ดใน Dashboard)</p>
+<pre><code class="language-css">ui-card-panel {
+    <span class="hljs-attribute">box-shadow</span>: <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.35</span>) <span class="hljs-number">0px</span> <span class="hljs-number">5px</span> <span class="hljs-number">15px</span>;
+    <span class="hljs-attribute">background-color</span>: white;
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">20px</span>;
+    <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>;
+}
+</code></pre>
+<ul>
+<li>สร้าง เงา รอบกรอบ (Box Shadow)</li>
+<li>พื้นหลังเป็นสีขาว</li>
+<li>มุมมน 20px</li>
+<li>ไม่มี margin และ padding</li>
+</ul>
+<hr>
+<p><strong><u>ปุ่ม <code>(.md-button)</code> ทั้งใน .<code>nr-dashboard-theme</code> และ <code>.sheet</code></u></strong></p>
+<pre><code class="language-css"><span class="hljs-attribute">box-shadow</span>: <span class="hljs-built_in">rgba</span>(...) ... inset, ...;
+<span class="hljs-attribute">border-radius</span>: <span class="hljs-number">50px</span>;
+</code></pre>
+<ul>
+<li>ใส่เงาหลายชั้น (ทั้งด้านนอกและแบบ inset)</li>
+<li>ทำให้ปุ่มมีลักษณะโค้งมนเหมือนแคปซูล (radius 50px)</li>
+</ul>
+<hr>
+<p><u><strong>การจัดการข้อความและการเลือกข้อความ</strong></u></p>
+<pre><code class="language-css"><span class="hljs-selector-tag">p</span> {
+    <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>;
+}
+root, <span class="hljs-selector-tag">a</span>, <span class="hljs-selector-tag">button</span>, <span class="hljs-selector-tag">p</span>, <span class="hljs-selector-tag">div</span> {
+    -webkit-user-select: none <span class="hljs-meta">!important</span>;
+}
+</code></pre>
+<ul>
+<li>ตัด margin/padding ของ <code>&lt;p&gt;</code> ออก</li>
+<li>ปิดไม่ให้ผู้ใช้สามารถ select ข้อความในองค์ประกอบต่าง ๆ (เช่น ปุ่ม, ลิงก์ ฯลฯ)</li>
+</ul>
+<hr>
+<p><u><strong>พื้นหลังของหน้าเว็บ (Body)</strong></u></p>
+<pre><code class="language-css"><span class="hljs-selector-tag">body</span> {
+    <span class="hljs-attribute">background</span>: <span class="hljs-built_in">-webkit-linear-gradient</span>(<span class="hljs-number">55deg</span>, <span class="hljs-built_in">rgb</span>(<span class="hljs-number">24</span>, <span class="hljs-number">117</span>, <span class="hljs-number">106</span>) <span class="hljs-number">0%</span>, <span class="hljs-built_in">rgb</span>(<span class="hljs-number">24</span>, <span class="hljs-number">117</span>, <span class="hljs-number">106</span>) <span class="hljs-number">100%</span>);
+    -webkit-touch-callout: none <span class="hljs-meta">!important</span>;
+}
+</code></pre>
+<ul>
+<li>กำหนดพื้นหลังเป็น ไล่สีเขียว (linear gradient)</li>
+<li>ปิดฟีเจอร์ &quot;แตะค้างเพื่อเรียกเมนู&quot; บนอุปกรณ์ touch screen</li>
+</ul>
+<hr>
+<p><u><strong>แถบด้านบน <code>(md-toolbar)</code></strong></u></p>
+<pre><code class="language-css">md-toolbar {
+    <span class="hljs-attribute">height</span>: <span class="hljs-number">180px</span>;
+    <span class="hljs-attribute">background-image</span>: <span class="hljs-built_in">url</span>(<span class="hljs-string">...</span>);
+    <span class="hljs-attribute">background-repeat</span>: no-repeat;
+    <span class="hljs-attribute">background-size</span>: contain;
+    <span class="hljs-attribute">background-position</span>: right;
+    <span class="hljs-attribute">box-shadow</span>: ...;
+}
+</code></pre>
+<ul>
+<li>กำหนดความสูง toolbar</li>
+<li>ใส่ภาพพื้นหลัง (รูปโลโก้หรือ banner)</li>
+<li>ปรับขนาดและตำแหน่งให้แสดงด้านขวา</li>
+<li>ใส่เงาให้มีมิติ</li>
+</ul>
+<hr>
+<p><u><strong>หัวข้อบน toolbar (<code>h1[node-id=&quot;dashboard_tab&quot;</code>])</strong></u></p>
+<pre><code class="language-css"><span class="hljs-attribute">font-size</span>: <span class="hljs-number">3rem</span>;
+<span class="hljs-attribute">font-weight</span>: bold;
+<span class="hljs-attribute">position</span>: absolute;
+<span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateY</span>(<span class="hljs-number">45%</span>);
+</code></pre>
+<ul>
+<li>กำหนดขนาดตัวอักษรใหญ่</li>
+<li>ตัวหนา</li>
+<li>ขยับตำแหน่งให้เลื่อนลงมาเล็กน้อย (translateY)</li>
+</ul>
+<hr>
+<p><u><strong>ข้อความเพิ่มเติมใต้หัวข้อ (<code>::after</code>)</strong></u></p>
+<pre><code class="language-css"><span class="hljs-attribute">content</span>: <span class="hljs-string">&quot;By Mechanical Embedded System Laboratory Silpakorn University&quot;</span>;
+<span class="hljs-attribute">font-size</span>: <span class="hljs-number">1.3rem</span>;
+<span class="hljs-attribute">color</span>: white;
+</code></pre>
+<ul>
+<li>เพิ่มข้อความอัตโนมัติใต้ <code>&lt;h1&gt;</code> โดยใช้ <code>::after</code></li>
+<li>ใช้สำหรับแสดงชื่อห้องแลบ</li>
+</ul>
+<hr>
+<p><u><strong>สีพื้นหลังรวมของธีม</strong></u></p>
+<pre><code class="language-css"><span class="hljs-selector-tag">body</span><span class="hljs-selector-class">.md-default-theme</span>, <span class="hljs-selector-tag">body</span>, <span class="hljs-selector-tag">html</span><span class="hljs-selector-class">.md-default-theme</span>, <span class="hljs-selector-tag">html</span> {
+    <span class="hljs-attribute">background-color</span>: <span class="hljs-built_in">rgb</span>(<span class="hljs-number">24</span>, <span class="hljs-number">117</span>, <span class="hljs-number">106</span>);
+}
+</code></pre>
+<ul>
+<li>กำหนดสีเขียวเข้มให้กับพื้นหลังของ Node-RED Dashboard ทั้งหมด</li>
+</ul>
+<hr>
+<h1 id="node-ต่างๆบน-dashboard">Node ต่างๆบน Dashboard</h1>
+<p><u><strong>ปุ่ม Google Sheet</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-1.png" alt="alt text"></p>
+<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;sheet md-raised nr-dashboard-form-button md-button md-ink-ripple&quot;</span> <span class="hljs-attr">onclick</span>=<span class="hljs-string">&quot;window.open(&#x27;https://docs.google.com/spreadsheets/d/1Qtke5Qp4zX0WO4G5a7lNyNeLruKn14sztlmga_WB2QQ/edit?usp=sharing&#x27;, &#x27;_blank&#x27;);&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;background: none; border: none; padding: 0; height: 100%; width: auto;&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpXVbN4ravLZ6l_rSIgx4WCBeKzOmFDHFrpQ&amp;s&quot;</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">&quot;Google Sheets Logo&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;height: 60px; width: 100px;&quot;</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+</code></pre>
+<hr>
+<p><u><strong>Node ชื่อปุ่ม Servo Loadcell</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-2.png" alt="alt text"></p>
+<hr>
+<p><strong><u>Node MQTT คำสั่งส่งไปยัง ESP32 Loadcell</u></strong></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-3.png" alt="alt text"></p>
+<ul>
+<li>payload: <code>{&quot;action&quot;: &quot;move_3&quot;}</code></li>
+<li>topic: <code>esp32/device3/servo</code></li>
+</ul>
+<hr>
+<p><strong><u>Node ประมวลข้อมูลต่างๆจาก MQTT</u></strong></p>
+<h2 id=""><img src="file:///c:\University\SideProject\PTangProj\image-6.png" alt="alt text"></h2>
+<p><u><strong>Node MQTT รอรับ Payload จาก ESP32 Loadcell</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-4.png" alt="alt text"></p>
+<ul>
+<li>payload: <code>esp32/device3/detected</code></li>
+</ul>
+<hr>
+<p><strong><u>Node ปุ่ม Reset บน Dashboard เพื่อส่ง payload <code>0</code> ไปยังระบบ</u></strong></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-8.png" alt="alt text"></p>
+<ul>
+<li>payload: <code>0</code></li>
+<li>topic: <code>reset</code></li>
+</ul>
+<hr>
+<p><u><strong>Node รับ Payload มา Process ว่าพบวัตถุหรือไม่</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-5.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">let</span> objectDetected = msg.<span class="hljs-property">payload</span>.<span class="hljs-property">objectDetected</span>;
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<hr>
+<p><u><strong>Node เพิ่มจำนวนนับเมื่อเจอวัตถุ</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-7.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">let</span> objectDetected = msg.<span class="hljs-property">payload</span>.<span class="hljs-property">objectDetected</span>;
+<span class="hljs-keyword">let</span> count = flow.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;item_count&quot;</span>) || <span class="hljs-number">0</span>;
+<span class="hljs-keyword">if</span> (objectDetected) {
+    count += <span class="hljs-number">1</span>;
+    flow.<span class="hljs-title function_">set</span>(<span class="hljs-string">&quot;item_count&quot;</span>, count);
+}
+
+<span class="hljs-keyword">return</span> { <span class="hljs-attr">topic</span>: <span class="hljs-string">&quot;count&quot;</span>, <span class="hljs-attr">payload</span>: count};
+</code></pre>
+<hr>
+<p><u><strong>Node ส่ง topic <code>count</code> และ payload <code>0</code></strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-9.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">let</span> count = flow.<span class="hljs-title function_">set</span>(<span class="hljs-string">&quot;item_count&quot;</span>, <span class="hljs-number">0</span>);
+
+<span class="hljs-keyword">return</span> { <span class="hljs-attr">topic</span>: <span class="hljs-string">&quot;count&quot;</span>, <span class="hljs-attr">payload</span>: <span class="hljs-number">0</span> };
+</code></pre>
+<hr>
+<p><u><strong>Node แสดง LED บน Dashboard</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-31.png" alt="alt text"></p>
+<ul>
+<li><code>{ &quot;objectDetected&quot;: 1 }</code> = <code>สีเขียว</code></li>
+<li><code>{ &quot;objectDetected&quot;: 0 }</code> = <code>สีแดง</code></li>
+</ul>
+<hr>
+<p><u><strong>Node MQTT Broker รอรับค่าน้ำหนัก ผ่าน topic <code>esp32/device3/weight</code></strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-10.png" alt="alt text"></p>
+<p><u><strong>Node Process ค่าจาก MQTT ให้มีค่า วัน-เวลา + น้ำหนัก</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-28.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">let</span> weight = msg.<span class="hljs-property">payload</span>;
+<span class="hljs-keyword">let</span> now = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>();
+
+<span class="hljs-keyword">let</span> formattedDate = now.<span class="hljs-title function_">getDate</span>().<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;0&#x27;</span>) + <span class="hljs-string">&quot;/&quot;</span> +
+    (now.<span class="hljs-title function_">getMonth</span>() + <span class="hljs-number">1</span>).<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;0&#x27;</span>) + <span class="hljs-string">&quot;/&quot;</span> +
+    now.<span class="hljs-title function_">getFullYear</span>();
+
+<span class="hljs-keyword">let</span> hours = now.<span class="hljs-title function_">getHours</span>();
+<span class="hljs-keyword">let</span> ampm = hours &gt;= <span class="hljs-number">12</span> ? <span class="hljs-string">&#x27;PM&#x27;</span> : <span class="hljs-string">&#x27;AM&#x27;</span>;
+hours = hours % <span class="hljs-number">12</span> || <span class="hljs-number">12</span>; <span class="hljs-comment">// Convert 0 to 12 for 12-hour format</span>
+
+<span class="hljs-keyword">let</span> formattedTime = hours.<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;0&#x27;</span>) + <span class="hljs-string">&quot;:&quot;</span> +
+    now.<span class="hljs-title function_">getMinutes</span>().<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;0&#x27;</span>) + <span class="hljs-string">&quot;:&quot;</span> +
+    now.<span class="hljs-title function_">getSeconds</span>().<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;0&#x27;</span>) + <span class="hljs-string">&quot; &quot;</span> + ampm;
+
+msg.<span class="hljs-property">payload</span> = [
+    formattedDate,
+    weight.<span class="hljs-title function_">toString</span>(),
+    formattedTime
+];
+
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<p>แล้วถูกส่งเข้า Google Sheet</p>
+<hr>
+<p><u><strong>Node แสดงจำนวนวัตถุที่นับน้ำหนักแล้วอิงค่าจาก <code>{{msg.payload}}</code></strong></u></p>
+<p>!<img src="file:///c:\University\SideProject\PTangProj\image-33.png" alt="alt text"></p>
+<hr>
+<p><u><strong>Node แสดงน้ำหนักแปลงค่าจาก MQTT มาแสดงน้ำหนักบน Dashboard</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-29.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">let</span> weight = msg.<span class="hljs-property">payload</span>;
+msg.<span class="hljs-property">payload</span> = weight.<span class="hljs-title function_">toString</span>() + <span class="hljs-string">&quot; grams&quot;</span>;
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<hr>
+<p><u><strong>Node แสดงชื่อ Switch</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-30.png" alt="alt text"></p>
+<hr>
+<p><u><strong>Node ทั้งหมดของการแสดงผลของ Non-Contamination และ Metallic Contamination</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-11.png" alt="alt text"></p>
+<hr>
+<p><u><strong>Node กด Switch บน Dashboard แล้วส่ง MQTT ไปยัง ESP32 เพื่อหมุน Servo</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-12.png" alt="alt text"></p>
+<ul>
+<li>topic: <code>esp32/device1/servo</code></li>
+<li>Reset Servo payload: <code>{&quot;action&quot;: &quot;reset_1&quot;}</code></li>
+<li>หมุน Servo payload: <code>{&quot;action&quot;: &quot;move_1&quot;}</code></li>
+<li>Reset และ ส่งค่านับ payload <code>{&quot;action&quot;: &quot;send_count_1&quot;}</code></li>
+</ul>
+<hr>
+<p><u><strong>Node รับค่าผ่าน MQTT แบบ Real-Time อัพเดทการนับจำนวนวัตถุที่ผ่าน</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-13.png" alt="alt text"></p>
+<ul>
+<li>ใช้ topic <code>esp32/device1/realtime</code></li>
+</ul>
+<hr>
+<p><u><strong>Node ส่งค่าไปยังแสดงผลบน Dashboard เมื่อเกิดการ Reset</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-14.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">let</span> count = flow.<span class="hljs-title function_">set</span>(<span class="hljs-string">&quot;item_count&quot;</span>, <span class="hljs-number">0</span>);
+
+<span class="hljs-keyword">return</span> { <span class="hljs-attr">topic</span>: <span class="hljs-string">&quot;count&quot;</span>, <span class="hljs-attr">payload</span>: <span class="hljs-number">0</span> };
+</code></pre>
+<hr>
+<p><u><strong>Node Process ค่าจาก MQTT ไปยังแสดงผลบน Dashboard</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-15.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">let</span> itemsCount = msg.<span class="hljs-property">payload</span>.<span class="hljs-property">count</span>
+
+<span class="hljs-keyword">return</span> { <span class="hljs-attr">topic</span>: <span class="hljs-string">&quot;count&quot;</span>, <span class="hljs-attr">payload</span>: itemsCount };;
+</code></pre>
+<hr>
+<p><u><strong>Node แสดงผลจำนวนนับบน Dashboard</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-16.png" alt="alt text"></p>
+<p>รับค่าจาก <code>{{msg.payload}}</code></p>
+<hr>
+<p><u><strong>Node Process ค่าจำนวนนับ เพื่อนำไปแสดงผลรวม</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-17.png" alt="alt text"></p>
+<p>ไม่พบสารปนเปื้อน</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> message = msg.<span class="hljs-property">payload</span>;
+<span class="hljs-keyword">const</span> today = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>();
+<span class="hljs-keyword">const</span> todayKey = <span class="hljs-string">`<span class="hljs-subst">${today.getDate()}</span>/<span class="hljs-subst">${today.getMonth() + <span class="hljs-number">1</span>}</span>/<span class="hljs-subst">${today.getFullYear()}</span>`</span>;
+
+<span class="hljs-keyword">const</span> result = {
+    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;No Contamination&quot;</span>,
+    <span class="hljs-attr">date</span>: todayKey,
+    <span class="hljs-attr">value</span>: msg.<span class="hljs-property">payload</span>
+};
+
+msg.<span class="hljs-property">payload</span> = result;
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<p>พบสารปนเปื้อน</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> message = msg.<span class="hljs-property">payload</span>;
+<span class="hljs-keyword">const</span> today = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>();
+<span class="hljs-keyword">const</span> todayKey = <span class="hljs-string">`<span class="hljs-subst">${today.getDate()}</span>/<span class="hljs-subst">${today.getMonth() + <span class="hljs-number">1</span>}</span>/<span class="hljs-subst">${today.getFullYear()}</span>`</span>;
+
+<span class="hljs-keyword">const</span> result = {
+    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;Metallic Contamination&quot;</span>,
+    <span class="hljs-attr">date</span>: todayKey,
+    <span class="hljs-attr">value</span>: msg.<span class="hljs-property">payload</span>
+};
+
+msg.<span class="hljs-property">payload</span> = result;
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<p>นำ Payload ทั้งสองไปรวมกันแล้วส่งไปยัง Node Process ข้อมูลเผื่อนำไปแสดงผล</p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-18.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Initialize default result</span>
+<span class="hljs-keyword">const</span> result = {
+    <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;No data available&quot;</span>,
+    <span class="hljs-attr">latestDate</span>: <span class="hljs-literal">null</span>,
+    <span class="hljs-attr">contaminationData</span>: {
+        <span class="hljs-attr">noContamination</span>: <span class="hljs-string">&quot;0&quot;</span>,
+        <span class="hljs-attr">metallicContamination</span>: <span class="hljs-string">&quot;0&quot;</span>
+    },
+    <span class="hljs-attr">totals</span>: {
+        <span class="hljs-attr">count</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-attr">productivityPercentage</span>: <span class="hljs-string">&quot;0%&quot;</span>,
+        <span class="hljs-attr">calculation</span>: <span class="hljs-string">&quot;(0 × 100) / 0 = 0%&quot;</span>
+    }
+};
+
+<span class="hljs-comment">// Process input if valid</span>
+<span class="hljs-keyword">if</span> (<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">isArray</span>(msg.<span class="hljs-property">payload</span>) &amp;&amp; msg.<span class="hljs-property">payload</span>.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) {
+    <span class="hljs-comment">// Find the latest date in the data</span>
+    <span class="hljs-keyword">let</span> latestDate = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">const</span> dateObjects = [];
+    
+    <span class="hljs-comment">// Convert all dates to Date objects for comparison</span>
+    msg.<span class="hljs-property">payload</span>.<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
+        <span class="hljs-keyword">const</span> [day, month, year] = item.<span class="hljs-property">date</span>.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;/&#x27;</span>);
+        <span class="hljs-keyword">const</span> dateObj = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">`<span class="hljs-subst">${year}</span>-<span class="hljs-subst">${month}</span>-<span class="hljs-subst">${day}</span>`</span>);
+        dateObjects.<span class="hljs-title function_">push</span>({
+            <span class="hljs-attr">original</span>: item,
+            <span class="hljs-attr">dateObj</span>: dateObj
+        });
+        
+        <span class="hljs-keyword">if</span> (!latestDate || dateObj &gt; latestDate) {
+            latestDate = dateObj;
+        }
+    });
+    
+    <span class="hljs-comment">// Format the latest date back to DD/MM/YYYY</span>
+    <span class="hljs-keyword">const</span> latestDateFormatted = latestDate ? 
+        <span class="hljs-string">`<span class="hljs-subst">${latestDate.getDate()}</span>/<span class="hljs-subst">${latestDate.getMonth() + <span class="hljs-number">1</span>}</span>/<span class="hljs-subst">${latestDate.getFullYear()}</span>`</span> : 
+        <span class="hljs-literal">null</span>;
+    
+    <span class="hljs-comment">// Filter only the data from the latest date</span>
+    <span class="hljs-keyword">const</span> latestData = dateObjects.<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> item.<span class="hljs-property">dateObj</span>.<span class="hljs-title function_">getTime</span>() === latestDate.<span class="hljs-title function_">getTime</span>());
+    
+    <span class="hljs-comment">// Initialize counters</span>
+    <span class="hljs-keyword">let</span> noContaminationValue = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">let</span> metallicContaminationValue = <span class="hljs-number">0</span>;
+    
+    <span class="hljs-comment">// Process latest data</span>
+    latestData.<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
+        <span class="hljs-keyword">const</span> value = <span class="hljs-built_in">parseInt</span>(item.<span class="hljs-property">original</span>.<span class="hljs-property">value</span>) || <span class="hljs-number">0</span>;
+        
+        <span class="hljs-keyword">if</span> (item.<span class="hljs-property">original</span>.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;No Contamination&quot;</span>) {
+            noContaminationValue = value;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (item.<span class="hljs-property">original</span>.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;Metallic Contamination&quot;</span>) {
+            metallicContaminationValue = value;
+        }
+    });
+    
+    <span class="hljs-comment">// Calculate totals</span>
+    <span class="hljs-keyword">const</span> totalCount = noContaminationValue + metallicContaminationValue;
+    <span class="hljs-keyword">const</span> productivityPercentage = totalCount &gt; <span class="hljs-number">0</span> ? 
+        (noContaminationValue * <span class="hljs-number">100</span>) / totalCount : <span class="hljs-number">0</span>;
+    
+    <span class="hljs-comment">// Update result</span>
+    result.<span class="hljs-property">status</span> = <span class="hljs-string">&quot;Success&quot;</span>;
+    result.<span class="hljs-property">latestDate</span> = latestDateFormatted;
+    result.<span class="hljs-property">contaminationData</span> = {
+        <span class="hljs-attr">noContamination</span>: noContaminationValue.<span class="hljs-title function_">toString</span>(),
+        <span class="hljs-attr">metallicContamination</span>: metallicContaminationValue.<span class="hljs-title function_">toString</span>()
+    };
+    result.<span class="hljs-property">totals</span> = {
+        <span class="hljs-attr">count</span>: totalCount,
+        <span class="hljs-attr">productivityPercentage</span>: <span class="hljs-string">`<span class="hljs-subst">${productivityPercentage.toFixed(<span class="hljs-number">2</span>)}</span>`</span>,
+        <span class="hljs-attr">calculation</span>: <span class="hljs-string">`(<span class="hljs-subst">${noContaminationValue}</span> × 100) / <span class="hljs-subst">${totalCount}</span> = <span class="hljs-subst">${productivityPercentage.toFixed(<span class="hljs-number">2</span>)}</span>%`</span>
+    };
+}
+
+msg.<span class="hljs-property">payload</span> = result;
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<p>Node แสดงวันที่บน Dashboard</p>
+<p>Node แสดงจำวัตถุทีไม่พบสารปนเปื้อน</p>
+<p>Node แสดงจำนวนวัตถุทั้งหมด</p>
+<p>Node แสดงประสิทธิภาพ</p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-20.png" alt="alt text"></p>
+<hr>
+<p><u><strong>Node นำจำนวนสารปนเปื้อน และ ไม่ปนเปื้อนไปคำนวนเพื่อประสิทธิภาพของเครื่องโดยแสดงออกมาเป็น % บน Dashboard</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-19.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">let</span> percentage = msg.<span class="hljs-property">payload</span>.<span class="hljs-property">totals</span>.<span class="hljs-property">productivityPercentage</span> + <span class="hljs-string">&quot;%&quot;</span>;
+
+msg.<span class="hljs-property">payload</span> = percentage;
+
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<hr>
+<p><u><strong>Node ทั้งหมดของการแสดงผลบน Dashboard</strong></u>
+<img src="file:///c:\University\SideProject\PTangProj\image-21.png" alt="alt text"></p>
+<hr>
+<p><u><strong>Node รับค่าจาก MQTT แล้ว Log ไปบน Google Sheet</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-22.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">let</span> count = msg.<span class="hljs-property">payload</span>.<span class="hljs-property">count</span>; <span class="hljs-comment">// Extract count value</span>
+<span class="hljs-keyword">let</span> now = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>();
+
+<span class="hljs-comment">// Format date as DD/MM/YYYY</span>
+<span class="hljs-keyword">let</span> formattedDate = now.<span class="hljs-title function_">getDate</span>().<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;0&#x27;</span>) + <span class="hljs-string">&quot;/&quot;</span> +
+    (now.<span class="hljs-title function_">getMonth</span>() + <span class="hljs-number">1</span>).<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;0&#x27;</span>) + <span class="hljs-string">&quot;/&quot;</span> +
+    now.<span class="hljs-title function_">getFullYear</span>();
+
+<span class="hljs-comment">// Format time as 12-hour format with AM/PM</span>
+<span class="hljs-keyword">let</span> hours = now.<span class="hljs-title function_">getHours</span>();
+<span class="hljs-keyword">let</span> ampm = hours &gt;= <span class="hljs-number">12</span> ? <span class="hljs-string">&#x27;PM&#x27;</span> : <span class="hljs-string">&#x27;AM&#x27;</span>;
+hours = hours % <span class="hljs-number">12</span> || <span class="hljs-number">12</span>; <span class="hljs-comment">// Convert 0 to 12 for 12-hour format</span>
+
+<span class="hljs-keyword">let</span> formattedTime = hours.<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;0&#x27;</span>) + <span class="hljs-string">&quot;:&quot;</span> +
+    now.<span class="hljs-title function_">getMinutes</span>().<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;0&#x27;</span>) + <span class="hljs-string">&quot;:&quot;</span> +
+    now.<span class="hljs-title function_">getSeconds</span>().<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;0&#x27;</span>) + <span class="hljs-string">&quot; &quot;</span> + ampm;
+
+<span class="hljs-comment">// Assign the formatted values to the payload</span>
+msg.<span class="hljs-property">payload</span> = [
+    formattedDate,  <span class="hljs-comment">// &quot;DD/MM/YYYY&quot;</span>
+    count,         <span class="hljs-comment">// Count value from msg.payload.count</span>
+    formattedTime   <span class="hljs-comment">// &quot;hh:mm:ss AM/PM&quot;</span>
+];
+
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<p><u><strong>Node ดึงค่าจาก Google Sheet จาก ทั้ง Non-Contamination และ Metallica Contamination นำมา Process เพื่อนำไปแสดง กราฟวงกลมบน Dashboard</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-23.png" alt="alt text"></p>
+<p>ปนเปื้อนเหล็ก</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> today = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>();
+<span class="hljs-keyword">const</span> todayKey = <span class="hljs-string">`<span class="hljs-subst">${today.getDate()}</span>/<span class="hljs-subst">${today.getMonth() + <span class="hljs-number">1</span>}</span>/<span class="hljs-subst">${today.getFullYear()}</span>`</span>;
+
+<span class="hljs-keyword">const</span> result = {
+    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;Metallic Contamination&quot;</span>,
+    <span class="hljs-attr">date</span>: todayKey,
+    <span class="hljs-attr">value</span>: <span class="hljs-number">0</span>
+};
+
+<span class="hljs-keyword">if</span> (<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">isArray</span>(msg.<span class="hljs-property">payload</span>) &amp;&amp; msg.<span class="hljs-property">payload</span>.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">const</span> todayData = msg.<span class="hljs-property">payload</span>.<span class="hljs-title function_">find</span>(<span class="hljs-function">(<span class="hljs-params">[date]</span>) =&gt;</span> date === todayKey);
+
+    <span class="hljs-keyword">if</span> (todayData) {
+        result.<span class="hljs-property">value</span> = <span class="hljs-built_in">parseInt</span>(todayData[<span class="hljs-number">1</span>]) || <span class="hljs-number">0</span>;
+    }
+}
+
+msg.<span class="hljs-property">payload</span> = result;
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<p>ไม่มีสารปนเปื้อน</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> today = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>();
+<span class="hljs-keyword">const</span> todayKey = <span class="hljs-string">`<span class="hljs-subst">${today.getDate()}</span>/<span class="hljs-subst">${today.getMonth() + <span class="hljs-number">1</span>}</span>/<span class="hljs-subst">${today.getFullYear()}</span>`</span>;
+
+<span class="hljs-keyword">const</span> result = {
+    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;No Contamination&quot;</span>,
+    <span class="hljs-attr">date</span>: todayKey,
+    <span class="hljs-attr">value</span>: <span class="hljs-number">0</span>
+};
+
+<span class="hljs-keyword">if</span> (<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">isArray</span>(msg.<span class="hljs-property">payload</span>) &amp;&amp; msg.<span class="hljs-property">payload</span>.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">const</span> todayData = msg.<span class="hljs-property">payload</span>.<span class="hljs-title function_">find</span>(<span class="hljs-function">(<span class="hljs-params">[date]</span>) =&gt;</span> date === todayKey);
+
+    <span class="hljs-keyword">if</span> (todayData) {
+        result.<span class="hljs-property">value</span> = <span class="hljs-built_in">parseInt</span>(todayData[<span class="hljs-number">1</span>]) || <span class="hljs-number">0</span>;
+    }
+}
+
+msg.<span class="hljs-property">payload</span> = result;
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<hr>
+<p><u><strong>Node แสดงกราฟวงกลม</strong></u>
+<img src="file:///c:\University\SideProject\PTangProj\image-24.png" alt="alt text"></p>
+<p>Code นำ ค่าจาก Payload มาแยกลงกราฟ</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">let</span> metallicValue = <span class="hljs-number">0</span>;
+<span class="hljs-keyword">let</span> nonContaminateValue = <span class="hljs-number">0</span>;
+
+<span class="hljs-keyword">if</span> (<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">isArray</span>(msg.<span class="hljs-property">payload</span>)) {
+    <span class="hljs-keyword">const</span> sortedPayload = [...msg.<span class="hljs-property">payload</span>].<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span>
+        a.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;Metallic Contamination&quot;</span> ? -<span class="hljs-number">1</span> : <span class="hljs-number">1</span>
+    );
+    sortedPayload.<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
+        <span class="hljs-keyword">if</span> (item.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;Metallic Contamination&quot;</span>) {
+            <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(item).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">[key, value]</span>) =&gt;</span> {
+                <span class="hljs-keyword">if</span> (key !== <span class="hljs-string">&quot;type&quot;</span>) metallicValue += <span class="hljs-title class_">Number</span>(value) || <span class="hljs-number">0</span>;
+            });
+        }
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (item.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;No Contamination&quot;</span>) {
+            <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(item).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">[key, value]</span>) =&gt;</span> {
+                <span class="hljs-keyword">if</span> (key !== <span class="hljs-string">&quot;type&quot;</span>) nonContaminateValue += <span class="hljs-title class_">Number</span>(value) || <span class="hljs-number">0</span>;
+            });
+        }
+    });
+}
+
+<span class="hljs-keyword">const</span> msg1 = {
+    <span class="hljs-attr">topic</span>: <span class="hljs-string">&quot;Non Contamination&quot;</span>,
+    <span class="hljs-attr">payload</span>: nonContaminateValue
+};
+
+<span class="hljs-keyword">const</span> msg2 = {
+    <span class="hljs-attr">topic</span>: <span class="hljs-string">&quot;Metallic Contamination&quot;</span>,
+    <span class="hljs-attr">payload</span>: metallicValue
+};
+
+<span class="hljs-keyword">return</span> [[msg1, msg2]];
+</code></pre>
+<p><u><strong>Node แสดงจำนวนนับวัตถุทั้งหมดที่ผ่านเข้าระบบ</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-25.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Initialize values with 0 defaults</span>
+<span class="hljs-keyword">let</span> metallicValue = <span class="hljs-number">0</span>;
+<span class="hljs-keyword">let</span> nonContaminateValue = <span class="hljs-number">0</span>;
+
+<span class="hljs-comment">// Process the payload if valid</span>
+<span class="hljs-keyword">if</span> (<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">isArray</span>(msg.<span class="hljs-property">payload</span>)) {
+    <span class="hljs-comment">// Sort with MetallicContamination first</span>
+    <span class="hljs-keyword">const</span> sortedPayload = [...msg.<span class="hljs-property">payload</span>].<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span>
+        a.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;Metallic Contamination&quot;</span> ? -<span class="hljs-number">1</span> : <span class="hljs-number">1</span>
+    );
+
+    <span class="hljs-comment">// Process all values (not just today&#x27;s)</span>
+    sortedPayload.<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
+        <span class="hljs-keyword">if</span> (item.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;Metallic Contamination&quot;</span>) {
+            <span class="hljs-comment">// Sum all metallic contamination values</span>
+            <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(item).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">[key, value]</span>) =&gt;</span> {
+                <span class="hljs-keyword">if</span> (key !== <span class="hljs-string">&quot;type&quot;</span>) metallicValue += <span class="hljs-title class_">Number</span>(value) || <span class="hljs-number">0</span>;
+            });
+        }
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (item.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;No Contamination&quot;</span>) {
+            <span class="hljs-comment">// Sum all non-contamination values</span>
+            <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(item).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">[key, value]</span>) =&gt;</span> {
+                <span class="hljs-keyword">if</span> (key !== <span class="hljs-string">&quot;type&quot;</span>) nonContaminateValue += <span class="hljs-title class_">Number</span>(value) || <span class="hljs-number">0</span>;
+            });
+        }
+    });
+}
+
+<span class="hljs-keyword">const</span> total = nonContaminateValue + metallicValue;
+<span class="hljs-keyword">return</span> { <span class="hljs-attr">topic</span>: <span class="hljs-string">&quot;total&quot;</span>, <span class="hljs-attr">payload</span>: total };;
+</code></pre>
+<hr>
+<p><u><strong>Node ดึงค่าประจำวันจาก Google Sheet จาก ทั้ง Non-Contamination และ Metallica Contamination นำมา Process เพื่อนำไปแสดง กราฟแท่งบน Dashboard</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-26.png" alt="alt text"></p>
+<p>Code ไม่พบสารปนเปื้อน</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Initialize an empty object to store the sum for each date</span>
+<span class="hljs-keyword">let</span> dateSums = { <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;NonContamination&quot;</span> };
+
+<span class="hljs-comment">// Loop through each entry in the payload array</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; msg.<span class="hljs-property">payload</span>.<span class="hljs-property">length</span>; i++) {
+    <span class="hljs-keyword">let</span> date = msg.<span class="hljs-property">payload</span>[i][<span class="hljs-number">0</span>];  <span class="hljs-comment">// Date is in the first element of the inner array</span>
+    <span class="hljs-keyword">let</span> value = <span class="hljs-built_in">parseInt</span>(msg.<span class="hljs-property">payload</span>[i][<span class="hljs-number">1</span>]);  <span class="hljs-comment">// The value is in the second element</span>
+
+    <span class="hljs-comment">// If the date already exists in the object, add the value to the existing sum</span>
+    <span class="hljs-keyword">if</span> (dateSums[date]) {
+        dateSums[date] += value;
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-comment">// If the date doesn&#x27;t exist yet, initialize it with the value</span>
+        dateSums[date] = value;
+    }
+}
+
+<span class="hljs-comment">// Now set the sum object to msg.payload</span>
+msg.<span class="hljs-property">payload</span> = dateSums;
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<p>Code พบสารปนเปื้อน</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Initialize an empty object to store the sum for each date</span>
+<span class="hljs-keyword">let</span> dateSums = { <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;MetallicContamination&quot;</span> };
+
+<span class="hljs-comment">// Loop through each entry in the payload array</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; msg.<span class="hljs-property">payload</span>.<span class="hljs-property">length</span>; i++) {
+    <span class="hljs-keyword">let</span> date = msg.<span class="hljs-property">payload</span>[i][<span class="hljs-number">0</span>];  <span class="hljs-comment">// Date is in the first element of the inner array</span>
+    <span class="hljs-keyword">let</span> value = <span class="hljs-built_in">parseInt</span>(msg.<span class="hljs-property">payload</span>[i][<span class="hljs-number">1</span>]);  <span class="hljs-comment">// The value is in the second element</span>
+
+    <span class="hljs-comment">// If the date already exists in the object, add the value to the existing sum</span>
+    <span class="hljs-keyword">if</span> (dateSums[date]) {
+        dateSums[date] += value;
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-comment">// If the date doesn&#x27;t exist yet, initialize it with the value</span>
+        dateSums[date] = value;
+    }
+}
+
+<span class="hljs-comment">// Now set the sum object to msg.payload</span>
+msg.<span class="hljs-property">payload</span> = dateSums;
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<hr>
+<p><u><strong>Node Process ค่าจาก payload นำไปแยกเป็น กราฟแท่ง</strong></u></p>
+<p><img src="file:///c:\University\SideProject\PTangProj\image-27.png" alt="alt text"></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">var</span> mobile = {};
+
+<span class="hljs-comment">// Initialize the labels array</span>
+mobile.<span class="hljs-property">labels</span> = [];
+
+<span class="hljs-comment">// Initialize the series array dynamically based on the types present in the payload</span>
+mobile.<span class="hljs-property">series</span> = [];
+
+<span class="hljs-comment">// Initialize the data array</span>
+mobile.<span class="hljs-property">data</span> = [];
+
+<span class="hljs-comment">// Sort the payload to ensure &quot;NoContamination&quot; comes first for series and data</span>
+<span class="hljs-keyword">var</span> sortedPayload = msg.<span class="hljs-property">payload</span>.<span class="hljs-title function_">slice</span>(); <span class="hljs-comment">// Make a copy of the original payload array</span>
+sortedPayload.<span class="hljs-title function_">sort</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params">a, b</span>) {
+    <span class="hljs-keyword">if</span> (a.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;MetallicContamination&quot;</span>) {
+        <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (b.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;MetallicContamination&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+});
+
+<span class="hljs-comment">// Extract the types and prepare the chart data</span>
+sortedPayload.<span class="hljs-title function_">forEach</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params">item, index</span>) {
+    <span class="hljs-comment">// Add the type name to the series</span>
+    mobile.<span class="hljs-property">series</span>.<span class="hljs-title function_">push</span>(item.<span class="hljs-property">type</span>);
+
+    <span class="hljs-comment">// If labels (dates) are not populated yet, get them from the first object (assuming all objects have the same date keys)</span>
+    <span class="hljs-keyword">if</span> (mobile.<span class="hljs-property">labels</span>.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) {
+        mobile.<span class="hljs-property">labels</span> = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(item).<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> key !== <span class="hljs-string">&#x27;type&#x27;</span>); <span class="hljs-comment">// exclude the &#x27;type&#x27; key</span>
+    }
+
+    <span class="hljs-comment">// Push the data values for the current type (item)</span>
+    <span class="hljs-keyword">var</span> dataValues = mobile.<span class="hljs-property">labels</span>.<span class="hljs-title function_">map</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params">date</span>) {
+        <span class="hljs-keyword">return</span> item[date] || <span class="hljs-number">0</span>; <span class="hljs-comment">// If a date is missing in an object, use 0 as the default</span>
+    });
+    mobile.<span class="hljs-property">data</span>.<span class="hljs-title function_">push</span>(dataValues);
+});
+
+<span class="hljs-comment">// Set the final payload</span>
+msg.<span class="hljs-property">payload</span> = [mobile];
+
+<span class="hljs-keyword">return</span> msg;
+</code></pre>
+<hr>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>
