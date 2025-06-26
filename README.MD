@@ -215,7 +215,9 @@ body.md-default-theme, body, html.md-default-theme, html {
 
 ![alt text](image-5.png)
 ```javascript
+// รับค่า objectDetected จาก payload ที่ส่งมา
 let objectDetected = msg.payload.objectDetected;
+// ส่งค่า msg ทั้งหมดกลับไป (ทั้ง payload และ objectDetected) เพื่อให้ Node ถัดไปนำไปใช้งานต่อ
 return msg;
 ```
 ---
@@ -223,13 +225,16 @@ return msg;
 
 ![alt text](image-7.png)
 ```javascript
+// รับค่า objectDetected จาก payload
 let objectDetected = msg.payload.objectDetected;
+// ดึงค่าตัวนับจาก flow หรือตั้งค่าเริ่มต้นเป็น 0
 let count = flow.get("item_count") || 0;
+// ถ้าตรวจพบวัตถุ ให้เพิ่มค่าตัวนับขึ้น 1
 if (objectDetected) {
     count += 1;
     flow.set("item_count", count);
 }
-
+// ส่งค่าตัวนับกลับไป พร้อมกับ topic
 return { topic: "count", payload: count};
 ```
 ---
@@ -238,8 +243,9 @@ return { topic: "count", payload: count};
 ![alt text](image-9.png)
 
 ```javascript
+// รีเซ็ตค่าตัวนับในระบบเป็น 0
 let count = flow.set("item_count", 0);
-
+// ส่งค่า 0 กลับไปพร้อม topic count
 return { topic: "count", payload: 0 };
 ```
 ---
@@ -258,21 +264,27 @@ return { topic: "count", payload: 0 };
 
 ![alt text](image-28.png)
 ```javascript
+// รับค่าน้ำหนักจาก payload
 let weight = msg.payload;
+// สร้างวัตถุ Date สำหรับเวลาปัจจุบัน
 let now = new Date();
 
+// จัดรูปแบบวันที่เป็น DD/MM/YYYY
 let formattedDate = now.getDate().toString().padStart(2, '0') + "/" +
     (now.getMonth() + 1).toString().padStart(2, '0') + "/" +
     now.getFullYear();
 
+// แปลงเวลาเป็นรูปแบบ 12 ชั่วโมง
 let hours = now.getHours();
 let ampm = hours >= 12 ? 'PM' : 'AM';
-hours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+hours = hours % 12 || 12; // แปลง 0 เป็น 12 สำหรับรูปแบบ 12 ชั่วโมง
 
+// จัดรูปแบบเวลาเป็น HH:MM:SS AM/PM
 let formattedTime = hours.toString().padStart(2, '0') + ":" +
     now.getMinutes().toString().padStart(2, '0') + ":" +
     now.getSeconds().toString().padStart(2, '0') + " " + ampm;
 
+// สร้าง array ของข้อมูลที่จะส่งไป Google Sheet
 msg.payload = [
     formattedDate,
     weight.toString(),
@@ -295,8 +307,11 @@ return msg;
 
 ![alt text](image-29.png)
 ```javascript
+// รับค่าน้ำหนักจาก payload
 let weight = msg.payload;
+// แปลงค่าน้ำหนักเป็น string และเพิ่มหน่วย "grams"
 msg.payload = weight.toString() + " grams";
+// ส่งค่ากลับไปแสดงผล
 return msg;
 ```
 --- 
@@ -337,8 +352,9 @@ return msg;
 ![alt text](image-14.png)
 
 ```javascript
+// รีเซ็ตค่าตัวนับในระบบเป็น 0
 let count = flow.set("item_count", 0);
-
+// ส่งค่า 0 กลับไปพร้อม topic count
 return { topic: "count", payload: 0 };
 ```
 ---
@@ -348,9 +364,10 @@ return { topic: "count", payload: 0 };
 ![alt text](image-15.png)
 
 ```javascript
+// รับค่าจำนวนนับจาก payload
 let itemsCount = msg.payload.count
-
-return { topic: "count", payload: itemsCount };;
+// ส่งค่าจำนวนนับกลับไปพร้อม topic count
+return { topic: "count", payload: itemsCount };
 ```
 ---
 
@@ -368,32 +385,42 @@ return { topic: "count", payload: itemsCount };;
 
 ไม่พบสารปนเปื้อน
 ```javascript
+// รับค่า payload จาก message
 const message = msg.payload;
+// สร้างวันที่ปัจจุบัน
 const today = new Date();
+// จัดรูปแบบวันที่เป็น DD/MM/YYYY
 const todayKey = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
 
+// สร้าง object ผลลัพธ์
 const result = {
-    type: "No Contamination",
-    date: todayKey,
-    value: msg.payload
+    type: "No Contamination",     // ประเภท: ไม่พบการปนเปื้อน
+    date: todayKey,               // วันที่ปัจจุบัน
+    value: msg.payload           // ค่าจำนวนนับ
 };
 
+// กำหนดค่าผลลัพธ์ให้ payload
 msg.payload = result;
 return msg;
 ```
 
 พบสารปนเปื้อน
 ```javascript
+// กรณีพบสารปนเปื้อนโลหะ
 const message = msg.payload;
+// สร้างวันที่ปัจจุบัน
 const today = new Date();
+// จัดรูปแบบวันที่เป็น DD/MM/YYYY
 const todayKey = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
 
+// สร้าง object ผลลัพธ์
 const result = {
-    type: "Metallic Contamination",
-    date: todayKey,
-    value: msg.payload
+    type: "Metallic Contamination",  // ประเภท: พบสารปนเปื้อนโลหะ
+    date: todayKey,                  // วันที่ปัจจุบัน
+    value: msg.payload               // ค่าจำนวนนับ
 };
 
+// กำหนดค่าผลลัพธ์ให้ payload
 msg.payload = result;
 return msg;
 ```
@@ -403,7 +430,7 @@ return msg;
 ![alt text](image-18.png)
 
 ```javascript
-// Initialize default result
+// สร้างโครงสร้างผลลัพธ์เริ่มต้น
 const result = {
     status: "No data available",
     latestDate: null,
@@ -418,13 +445,13 @@ const result = {
     }
 };
 
-// Process input if valid
+// ตรวจสอบข้อมูลที่รับเข้ามา
 if (Array.isArray(msg.payload) && msg.payload.length > 0) {
-    // Find the latest date in the data
+    // หาวันที่ล่าสุดในข้อมูล
     let latestDate = null;
     const dateObjects = [];
     
-    // Convert all dates to Date objects for comparison
+    // แปลงวันที่ทั้งหมดเป็น Date objects เพื่อเปรียบเทียบ
     msg.payload.forEach(item => {
         const [day, month, year] = item.date.split('/');
         const dateObj = new Date(`${year}-${month}-${day}`);
@@ -433,27 +460,29 @@ if (Array.isArray(msg.payload) && msg.payload.length > 0) {
             dateObj: dateObj
         });
         
+        // อัพเดทวันที่ล่าสุด
         if (!latestDate || dateObj > latestDate) {
             latestDate = dateObj;
         }
     });
     
-    // Format the latest date back to DD/MM/YYYY
+    // แปลงวันที่ล่าสุดกลับเป็นรูปแบบ DD/MM/YYYY
     const latestDateFormatted = latestDate ? 
         `${latestDate.getDate()}/${latestDate.getMonth() + 1}/${latestDate.getFullYear()}` : 
         null;
     
-    // Filter only the data from the latest date
-    const latestData = dateObjects.filter(item => item.dateObj.getTime() === latestDate.getTime());
+    // กรองเฉพาะข้อมูลของวันล่าสุด
+    const latestData = dateObjects.filter(item => 
+        item.dateObj.getTime() === latestDate.getTime()
+    );
     
-    // Initialize counters
+    // ตัวแปรนับจำนวน
     let noContaminationValue = 0;
     let metallicContaminationValue = 0;
     
-    // Process latest data
+    // ประมวลผลข้อมูลล่าสุด
     latestData.forEach(item => {
         const value = parseInt(item.original.value) || 0;
-        
         if (item.original.type === "No Contamination") {
             noContaminationValue = value;
         } else if (item.original.type === "Metallic Contamination") {
@@ -461,12 +490,12 @@ if (Array.isArray(msg.payload) && msg.payload.length > 0) {
         }
     });
     
-    // Calculate totals
+    // คำนวณผลรวมและเปอร์เซ็นต์
     const totalCount = noContaminationValue + metallicContaminationValue;
     const productivityPercentage = totalCount > 0 ? 
         (noContaminationValue * 100) / totalCount : 0;
     
-    // Update result
+    // อัพเดทผลลัพธ์
     result.status = "Success";
     result.latestDate = latestDateFormatted;
     result.contaminationData = {
@@ -480,6 +509,7 @@ if (Array.isArray(msg.payload) && msg.payload.length > 0) {
     };
 }
 
+// ส่งผลลัพธ์กลับ
 msg.payload = result;
 return msg;
 ```
@@ -500,10 +530,9 @@ Node แสดงประสิทธิภาพ
 
 ![alt text](image-19.png)
 ```javascript
+// แสดงค่าประสิทธิภาพเป็นเปอร์เซ็นต์
 let percentage = msg.payload.totals.productivityPercentage + "%";
-
 msg.payload = percentage;
-
 return msg;
 ```
 
@@ -519,28 +548,31 @@ return msg;
 ![alt text](image-22.png)
 
 ```javascript
-let count = msg.payload.count; // Extract count value
+// รับค่าจำนวนนับจาก payload
+let count = msg.payload.count;
+// สร้างวัตถุ Date สำหรับเวลาปัจจุบัน
 let now = new Date();
 
-// Format date as DD/MM/YYYY
+// จัดรูปแบบวันที่เป็น DD/MM/YYYY
 let formattedDate = now.getDate().toString().padStart(2, '0') + "/" +
     (now.getMonth() + 1).toString().padStart(2, '0') + "/" +
     now.getFullYear();
 
-// Format time as 12-hour format with AM/PM
+// จัดรูปแบบเวลาเป็น 12 ชั่วโมงพร้อม AM/PM
 let hours = now.getHours();
 let ampm = hours >= 12 ? 'PM' : 'AM';
-hours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+hours = hours % 12 || 12; // แปลง 0 เป็น 12 สำหรับรูปแบบ 12 ชั่วโมง
 
+// จัดรูปแบบเวลาเป็น HH:MM:SS AM/PM
 let formattedTime = hours.toString().padStart(2, '0') + ":" +
     now.getMinutes().toString().padStart(2, '0') + ":" +
     now.getSeconds().toString().padStart(2, '0') + " " + ampm;
 
-// Assign the formatted values to the payload
+// สร้าง array ข้อมูลเพื่อส่งไป Google Sheet
 msg.payload = [
-    formattedDate,  // "DD/MM/YYYY"
-    count,         // Count value from msg.payload.count
-    formattedTime   // "hh:mm:ss AM/PM"
+    formattedDate,  // วันที่ในรูปแบบ "DD/MM/YYYY"
+    count,          // จำนวนนับจาก msg.payload.count
+    formattedTime   // เวลาในรูปแบบ "HH:MM:SS AM/PM"
 ];
 
 return msg;
@@ -551,46 +583,60 @@ return msg;
 
 ปนเปื้อนเหล็ก
 ```javascript
+// สร้างวันที่ปัจจุบัน
 const today = new Date();
+// จัดรูปแบบวันที่เป็น DD/MM/YYYY
 const todayKey = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
 
+// สร้าง object ผลลัพธ์สำหรับวัตถุที่ไม่มีการปนเปื้อน
 const result = {
-    type: "Metallic Contamination",
-    date: todayKey,
-    value: 0
+    type: "No Contamination",   // ประเภท: ไม่พบการปนเปื้อน
+    date: todayKey,            // วันที่ปัจจุบัน
+    value: 0                   // ค่าเริ่มต้น
 };
 
+// ตรวจสอบข้อมูลที่รับเข้ามา
 if (Array.isArray(msg.payload) && msg.payload.length > 0) {
+    // ค้นหาข้อมูลของวันนี้
     const todayData = msg.payload.find(([date]) => date === todayKey);
 
+    // ถ้าพบข้อมูลของวันนี้ ให้แปลงค่าเป็นตัวเลข
     if (todayData) {
         result.value = parseInt(todayData[1]) || 0;
     }
 }
 
+// ส่งผลลัพธ์กลับ
 msg.payload = result;
 return msg;
 ```
 
 ไม่มีสารปนเปื้อน
 ```javascript
+// สร้างวันที่ปัจจุบัน
 const today = new Date();
+// จัดรูปแบบวันที่เป็น DD/MM/YYYY
 const todayKey = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
 
+// สร้าง object ผลลัพธ์สำหรับวัตถุที่ไม่มีการปนเปื้อน
 const result = {
-    type: "No Contamination",
-    date: todayKey,
-    value: 0
+    type: "No Contamination",   // ประเภท: ไม่พบการปนเปื้อน
+    date: todayKey,            // วันที่ปัจจุบัน
+    value: 0                   // ค่าเริ่มต้น
 };
 
+// ตรวจสอบข้อมูลที่รับเข้ามา
 if (Array.isArray(msg.payload) && msg.payload.length > 0) {
+    // ค้นหาข้อมูลของวันนี้
     const todayData = msg.payload.find(([date]) => date === todayKey);
 
+    // ถ้าพบข้อมูลของวันนี้ ให้แปลงค่าเป็นตัวเลข
     if (todayData) {
         result.value = parseInt(todayData[1]) || 0;
     }
 }
 
+// ส่งผลลัพธ์กลับ
 msg.payload = result;
 return msg;
 ```
@@ -601,20 +647,27 @@ return msg;
 
 Code นำ ค่าจาก Payload มาแยกลงกราฟ
 ```javascript
+// กำหนดค่าเริ่มต้นสำหรับการนับจำนวน
 let metallicValue = 0;
 let nonContaminateValue = 0;
 
+// ตรวจสอบว่า payload เป็น array หรือไม่
 if (Array.isArray(msg.payload)) {
+    // เรียงลำดับข้อมูลโดยให้ Metallic Contamination มาก่อน
     const sortedPayload = [...msg.payload].sort((a, b) =>
         a.type === "Metallic Contamination" ? -1 : 1
     );
+    
+    // วนลูปประมวลผลข้อมูลแต่ละรายการ
     sortedPayload.forEach(item => {
         if (item.type === "Metallic Contamination") {
+            // รวมค่าการปนเปื้อนโลหะ
             Object.entries(item).forEach(([key, value]) => {
                 if (key !== "type") metallicValue += Number(value) || 0;
             });
         }
         else if (item.type === "No Contamination") {
+            // รวมค่าไม่พบการปนเปื้อน
             Object.entries(item).forEach(([key, value]) => {
                 if (key !== "type") nonContaminateValue += Number(value) || 0;
             });
@@ -622,6 +675,7 @@ if (Array.isArray(msg.payload)) {
     });
 }
 
+// สร้าง message สำหรับส่งไปแสดงผลกราฟวงกลม
 const msg1 = {
     topic: "Non Contamination",
     payload: nonContaminateValue
@@ -679,48 +733,48 @@ return { topic: "total", payload: total };;
 
 Code ไม่พบสารปนเปื้อน
 ```javascript
-// Initialize an empty object to store the sum for each date
+// สร้างออบเจ็กต์เปล่าเพื่อเก็บผลรวมของแต่ละวัน
 let dateSums = { type: "NonContamination" };
 
-// Loop through each entry in the payload array
+// วนลูปผ่านข้อมูลแต่ละรายการใน payload array
 for (let i = 0; i < msg.payload.length; i++) {
-    let date = msg.payload[i][0];  // Date is in the first element of the inner array
-    let value = parseInt(msg.payload[i][1]);  // The value is in the second element
+    let date = msg.payload[i][0];  // วันที่อยู่ในอาร์เรย์ตำแหน่งแรก
+    let value = parseInt(msg.payload[i][1]);  // ค่าอยู่ในตำแหน่งที่สอง
 
-    // If the date already exists in the object, add the value to the existing sum
+    // ถ้ามีข้อมูลของวันนี้แล้ว ให้บวกค่าเพิ่ม
     if (dateSums[date]) {
         dateSums[date] += value;
     } else {
-        // If the date doesn't exist yet, initialize it with the value
+        // ถ้ายังไม่มีข้อมูลของวันนี้ ให้กำหนดค่าเริ่มต้น
         dateSums[date] = value;
     }
 }
 
-// Now set the sum object to msg.payload
+// กำหนดผลลัพธ์ให้ payload และส่งกลับ
 msg.payload = dateSums;
 return msg;
 ```
 
 Code พบสารปนเปื้อน
 ```javascript
-// Initialize an empty object to store the sum for each date
+// สร้างออบเจ็กต์เปล่าเพื่อเก็บผลรวมของแต่ละวัน
 let dateSums = { type: "MetallicContamination" };
 
-// Loop through each entry in the payload array
+// วนลูปผ่านข้อมูลแต่ละรายการใน payload array
 for (let i = 0; i < msg.payload.length; i++) {
-    let date = msg.payload[i][0];  // Date is in the first element of the inner array
-    let value = parseInt(msg.payload[i][1]);  // The value is in the second element
+    let date = msg.payload[i][0];  // วันที่อยู่ในอาร์เรย์ตำแหน่งแรก
+    let value = parseInt(msg.payload[i][1]);  // ค่าอยู่ในตำแหน่งที่สอง
 
-    // If the date already exists in the object, add the value to the existing sum
+    // ถ้ามีข้อมูลของวันนี้แล้ว ให้บวกค่าเพิ่ม
     if (dateSums[date]) {
         dateSums[date] += value;
     } else {
-        // If the date doesn't exist yet, initialize it with the value
+        // ถ้ายังไม่มีข้อมูลของวันนี้ ให้กำหนดค่าเริ่มต้น
         dateSums[date] = value;
     }
 }
 
-// Now set the sum object to msg.payload
+// กำหนดผลลัพธ์ให้ payload และส่งกลับ
 msg.payload = dateSums;
 return msg;
 ```
@@ -730,48 +784,27 @@ return msg;
 
 ![alt text](image-27.png)
 ```javascript
-var mobile = {};
+const today = new Date();
+const todayKey = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
 
-// Initialize the labels array
-mobile.labels = [];
+// สร้าง object ผลลัพธ์สำหรับวัตถุที่ไม่มีการปนเปื้อน
+const result = {
+    type: "No Contamination",   // ประเภท: ไม่พบการปนเปื้อน
+    date: todayKey,            // วันที่ปัจจุบัน
+    value: 0                   // ค่าเริ่มต้น
+};
 
-// Initialize the series array dynamically based on the types present in the payload
-mobile.series = [];
-
-// Initialize the data array
-mobile.data = [];
-
-// Sort the payload to ensure "NoContamination" comes first for series and data
-var sortedPayload = msg.payload.slice(); // Make a copy of the original payload array
-sortedPayload.sort(function (a, b) {
-    if (a.type === "MetallicContamination") {
-        return -1;
-    } else if (b.type === "MetallicContamination") {
-        return 1;
+// ตรวจสอบข้อมูลที่รับเข้ามา
+if (Array.isArray(msg.payload) && msg.payload.length > 0) {
+    // ค้นหาข้อมูลของวันนี้
+    const todayData = msg.payload.find(([date]) => date === todayKey);
+    // ถ้าพบข้อมูลของวันนี้ ให้แปลงค่าเป็นตัวเลข
+    if (todayData) {
+        result.value = parseInt(todayData[1]) || 0;
     }
-    return 0;
-});
+}
 
-// Extract the types and prepare the chart data
-sortedPayload.forEach(function (item, index) {
-    // Add the type name to the series
-    mobile.series.push(item.type);
-
-    // If labels (dates) are not populated yet, get them from the first object (assuming all objects have the same date keys)
-    if (mobile.labels.length === 0) {
-        mobile.labels = Object.keys(item).filter(key => key !== 'type'); // exclude the 'type' key
-    }
-
-    // Push the data values for the current type (item)
-    var dataValues = mobile.labels.map(function (date) {
-        return item[date] || 0; // If a date is missing in an object, use 0 as the default
-    });
-    mobile.data.push(dataValues);
-});
-
-// Set the final payload
-msg.payload = [mobile];
-
+// ส่งผลลัพธ์กลับ
+msg.payload = result;
 return msg;
 ```
----
